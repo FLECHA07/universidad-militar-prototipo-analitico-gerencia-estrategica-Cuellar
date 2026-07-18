@@ -1,36 +1,75 @@
-# Tablero de Priorización
+# TABLA PRIORIZACIÓN
 
-## Causa
+## Estructura de la hoja
 
-| Causa |
-|--------|
-| Capacitación insuficiente poco práctica para el personal operativo. |
+| Columna | Encabezado |
+|---------|------------|
+| A | Causa |
+| B | Fase DT origen (E/D/I) |
+| C | Insight de empatía |
+| D | Supuesto central |
+| E | Pregunta analítica |
+| F | Variables (nombres exactos) |
+| G | Tipo (Outcome / Explic / Control / Segmento) |
+| H | Cálculo / Transformación |
+| I | Métrica (nombre + fórmula) |
+| J | Periodo / Segmento |
+| K | Patrón esperado (si cierta) |
+| L | Condición refutación |
+| M | Valor esperado para usuario/ciudadano |
+| N | Riesgo si falsa |
+| O | Acción si confirma |
+| P | Acción si refuta |
+| Q | Experimento analítico mínimo (query + visual 1 línea) |
+| R | Estado (V/A/R) |
 
-## Fase DT de origen
+---
 
-| Fase DT origen (E/D/I) |
-|------------------------|
-| E / Empatizar |
+# Registro Fila 2
 
-## Insight de empatía
+## A. Causa
 
-| Insight de empatía |
-|--------------------|
-| Los operarios sienten frustración e inseguridad porque no reciben capacitación práctica ni acompañamiento suficiente para utilizar el nuevo ERP con confianza. |
+Capacitación insuficiente poco práctica para el personal operativo.
 
-## Supuesto central
+---
 
-| Supuesto central |
-|------------------|
-| Si al personal se le brinda capacitación práctica sobre SAP S/4HANA, entonces obtendrá mayor adopción del sistema por parte del personal operativo. |
+## B. Fase DT origen
 
-## Pregunta analítica
+**E / Empatizar**
 
-| Pregunta analítica |
-|--------------------|
-| ¿La capacitación práctica sobre SAP S/4HANA incrementa la adopción del sistema por parte del personal operativo? |
+---
 
-## Variables del análisis
+## C. Insight de empatía
+
+Los operarios sienten frustración e inseguridad porque no reciben capacitación práctica ni acompañamiento suficiente para utilizar el nuevo ERP con confianza.
+
+---
+
+## D. Supuesto central
+
+Si al personal se le brinda capacitación práctica sobre SAP S/4HANA, entonces obtendrá una mayor adopción del sistema por parte del personal operativo.
+
+---
+
+## E. Pregunta analítica
+
+¿La capacitación práctica sobre SAP S/4HANA incrementa la adopción del sistema por parte del personal operativo?
+
+---
+
+## F. Variables
+
+1. employee_id
+2. department_name
+3. job_role
+4. training_hours_practical
+5. training_score
+6. training_completion_status
+7. sap_error_count
+
+---
+
+## G. Tipo de variables
 
 | Variable | Tipo |
 |----------|------|
@@ -42,148 +81,112 @@
 | training_completion_status | Explicativa |
 | sap_error_count | Outcome |
 
-## Transformaciones de datos
+---
 
-| Transformación |
-|----------------|
-| Filtrar registros donde **department_name = 'Producción'**. |
-| Filtrar registros donde **training_completion_status = 'Completado'**. |
-| Eliminar registros duplicados utilizando **employee_id**. |
-| Clasificar colaboradores con **erp_adoption_score ≥ 80**. |
-| Contar colaboradores con adopción satisfactoria. |
-| Contar el total de colaboradores capacitados. |
-| Calcular el porcentaje de adopción (IAOS). |
+## H. Cálculo / Transformación
 
-## Métrica
+1. Filtrar `department_name = Producción`.
+2. Filtrar `training_completion_status = Completado`.
+3. Depurar registros duplicados (`employee_id`).
+4. Clasificar empleados con `erp_adoption_score ≥ 80`.
+5. Contar usuarios con adopción satisfactoria.
+6. Contar total de usuarios capacitados.
+7. Calcular el porcentaje de adopción (IAOS).
 
-| **Nombre del indicador** | Fórmula |
-|---------------------------|---------|
-| **Índice de Adopción Operativa de SAP S/4HANA (IAOS)** | (Colaboradores que adoptaron SAP S/4HANA / Total de colaboradores capacitados) × 100 |
+---
 
-## Periodo de medición
+## I. Métrica
 
-| Periodo |
-|----------|
-| Mensual durante los primeros seis meses posteriores a la implementación de SAP S/4HANA. |
+### Nombre
 
-## Resultado esperado
+**Índice de Adopción Operativa de SAP S/4HANA (IAOS)**
 
-| Patrón esperado | **Condición de refutación** |
-|-----------------|-----------------------------|
-| **≥ 85 %** | **≤ 60 %** |
+### Fórmula
 
-## Valor esperado
-
-| Valor esperado para el usuario |
-|--------------------------------|
-| El personal operativo utilizará SAP S/4HANA reduciendo errores en la ejecución de sus procesos. |
-
-## Riesgo si el supuesto es falso
-
-| Riesgo |
-|---------|
-| La organización perderá recursos económicos y credibilidad durante la implementación de SAP S/4HANA. |
-
-## Acción si confirma
-
-| Acción |
-|---------|
-| Establecer como política que ningún colaborador operativo inicie actividades en SAP S/4HANA sin haber completado y aprobado la capacitación práctica. |
-
-## Acción si refuta
-
-| Acción |
-|---------|
-| Implementar un plan de comunicación y acompañamiento operativo para el personal de producción que incluya reuniones semanales, usuarios líderes por turno y soporte en sitio durante el uso de SAP S/4HANA. |
-
-## Experimento Analítico Mínimo
-
-### Consulta SQL
-
-```sql
-SELECT
-    department_name,
-    DATE_TRUNC('month', training_date) AS mes,
-    COUNT(CASE WHEN erp_adoption_score >= 80 THEN employee_id END) * 100.0 /
-    COUNT(employee_id) AS iaos
-FROM sap_training
-WHERE department_name = 'Producción'
-  AND training_completion_status = 'Completado'
-GROUP BY
-    department_name,
-    DATE_TRUNC('month', training_date)
-ORDER BY mes;
+```text
+IAOS =
+(Colaboradores que adoptaron SAP /
+Total de colaboradores capacitados)
+× 100
 ```
 
-### Visualización
+---
 
-| Visualización |
-|---------------|
-| Gráfico de barras del IAOS mensual para el personal operativo del área de Producción. |
+## J. Periodo
 
-## Estado
+Mensual, durante los primeros seis meses posteriores a la implementación de SAP S/4HANA.
 
-| Estado |
-|--------|
-| V (Pendiente de validación). |
-# Ficha de Indicador
+---
 
-## Supuesto central
+## K. Patrón esperado
 
-| Supuesto central |
-|------------------|
-| Si al equipo de producción se le brinda capacitación práctica sobre SAP S/4HANA, obtendrá mayor adopción del sistema por parte del personal operativo. |
+**≥ 85 %**
 
-## Paso 1. Objetivo del Indicador
+---
 
-| ¿Qué hago? | ¿Cómo lo hago? | ¿Para qué lo hago? |
-|-------------|----------------|--------------------|
-| Implementar un programa de capacitación práctica sobre SAP S/4HANA dirigido al personal operativo. | Mediante talleres prácticos, simulaciones de procesos reales, ejercicios guiados y acompañamiento durante la ejecución de actividades en SAP S/4HANA. | Incrementar la adopción del sistema SAP S/4HANA por parte del personal operativo y reducir la resistencia al cambio. |
+## L. Condición de refutación
 
-## Paso 2. Factor crítico
+**≤ 60 %**
 
-| Aspecto específico a medir | Público objetivo | Dimensión |
-|----------------------------|------------------|-----------|
-| Nivel de adopción del ERP SAP S/4HANA después de recibir capacitación práctica. | Personal operativo. | Eficacia (¿Logra el resultado?). |
+---
 
-## Paso 3. Fórmula
+## M. Valor esperado para el usuario
 
-| **Nombre del indicador** | Numerador | Denominador | Fórmula | Prueba de estrés |
-|---------------------------|-----------|-------------|----------|------------------|
-| **Índice de Adopción Operativa de SAP S/4HANA (IAOS)** | Colaboradores que adoptaron correctamente SAP S/4HANA. | Total de colaboradores operativos capacitados. | (Colaboradores que adoptaron correctamente SAP S/4HANA / Total de colaboradores operativos capacitados) × 100 | El indicador puede verse afectado si los colaboradores utilizan el sistema de manera obligatoria sin comprender realmente los procesos, generando una sobreestimación de la adopción. También puede distorsionarse si existen registros incompletos o si no todos los colaboradores capacitados utilizan el ERP durante el período de evaluación. |
+El personal operativo utilizará SAP S/4HANA reduciendo errores durante la implementación.
 
-## Paso 4. Unidad
+---
 
-| Tipo |
-|------|
-| Porcentaje (%) |
+## N. Riesgo si la hipótesis es falsa
 
-## Paso 5. Fuentes
+La organización perderá recursos económicos y credibilidad en el proceso de implementación de SAP S/4HANA.
 
-| Frecuencia de medición | Fuente de datos |
-|------------------------|-----------------|
-| Mensual | 1. Registros del sistema SAP S/4HANA (logs y reportes de uso).<br>2. Reportes del área de Talento Humano y del líder del proyecto de implementación.<br>3. Resultados de las evaluaciones prácticas de capacitación.<br>4. Registros de asistencia y finalización de la capacitación. |
+---
 
-## Paso 6. Seguimiento
+## O. Acción si confirma
 
-| Línea base | Meta | **Condición de refutación** |
-|-------------|------|-----------------------------|
-| 0 % | **≥ 85 %** | **≤ 60 %** |
+Establecer como política que ningún colaborador operativo inicie actividades en SAP S/4HANA sin haber completado y aprobado la capacitación práctica.
 
-## Consulta asociada al indicador
+---
 
-```sql
-SELECT
-    COUNT(CASE WHEN erp_adoption_score >= 80 THEN employee_id END) * 100.0 /
-    COUNT(employee_id) AS iaos
-FROM sap_training
-WHERE department_name = 'Producción'
-  AND training_completion_status = 'Completado';
-```
+## P. Acción si refuta
 
-## Visualización sugerida
+Implementar inmediatamente un plan de comunicación y acompañamiento operativo para el personal de producción, incluyendo:
 
-| Visualización |
-|---------------|
-| Indicador tipo KPI acompañado de un gráfico de barras que compare el IAOS mensual con la meta del 85 %. |
+- reuniones semanales de seguimiento;
+- espacios de aclaración de dudas;
+- usuarios líderes por turno;
+- soporte en sitio durante el uso de SAP S/4HANA.
 
+---
+
+## Q. Experimento analítico mínimo
+
+*Sin diligenciar.*
+
+---
+
+## R. Estado
+
+*Sin diligenciar.*
+
+---
+
+# Estado de la hoja
+
+| Fila | Estado |
+|------|--------|
+| 1 | Encabezados |
+| 2 | Registro completo |
+| 3 | Vacía |
+| 4 | Vacía |
+| 5 | Vacía |
+| 6 | Vacía |
+| 7 | Vacía |
+| 8 | Vacía |
+| 9 | Vacía |
+| 10 | Vacía |
+| 11 | Vacía |
+| 12 | Vacía |
+| 13 | Vacía |
+| 14 | Vacía |
+| 15 | Vacía |
