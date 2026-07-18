@@ -1,6 +1,0 @@
-| employee_id | department_name | job_role | training_hours_practical | training_score | training_completion_status | sap_error_count | erp_adoption_score | adoption_status |
-|-------------|-----------------|----------|--------------------------:|---------------:|----------------------------|----------------:|-------------------:|-----------------|
-| EMP001 | Producción | Operario | 16 | 92 | Completed | 1 | 95 | Adopted |
-| EMP002 | Producción | Operario | 12 | 88 | Completed | 2 | 89 | Adopted |
-| EMP003 | Producción | Operario | 8 | 72 | Completed | 5 | 74 | Not Adopted |
-| ... | ... | ... | ... | ... | ... | ... | ... | ... |
